@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Weather_Forecast App</title>
+    <Style>
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        #header {
+            width: 100%;
+            height: 100px;
+            background-color:yellowgreen;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #form {
+            width: 50%;
+            height: 150px;
+            margin-top: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #label {
+            font-size: 23px;
+        }
+
+        #cityname {
+            height: 20px;
+        }
+
+        #searchbtn {
+            width: 70px;
+            height: 26px;
+        }
+
+        #result {
+            width: 50%;
+            height: 250px;
+            background-color:yellowgreen;
+            display: flex;
+            justify-content:center;
+            align-items: center;
+        }
+    </Style>
+</head>
+
+<body>
+    <div id="header">
+        <div id="logo">
+            <h1>WEATHER FORCAST</h1>
+        </div>
+    </div>
+    <center>
+        <div id="form">
+            <label for="cityname" id="label">City :</label>
+            <input type="text" id="cityname" name="cityname">
+            <br />
+            <button id="searchbtn">Search</button>
+        </div>
+        <div id="result">
+          
+            <div id="location">
+            </div>
+            <br/>
+            <div id="current" >
+            </div>
+            <br/>
+            <div id="forecast" >
+            </div>
+            <br/>
+        
+        </div>
+    </center>
+</body>
+<Script>
+    var cityname = document.getElementById("cityname");
+    var searchbtn = document.getElementById("searchbtn");
+    var result = document.getElementById("result");
+
+    searchbtn.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        let url = "https://weatherapi-com.p.rapidapi.com/forecast.json?q="+cityname.value+"&days=3" ;
+        fetch(url, {
+	"method": "GET",
+	"headers": {
+		"x-rapidapi-key": "2742179160msh7fc9bab50aecb52p1cf4dfjsnece47d904882",
+		"x-rapidapi-host": "weatherapi-com.p.rapidapi.com"
+    }
+	})//fetching the information using the given url.
+            .then((response) => {
+            console.log(response); //first then me it will return promise only not the response.
+            return response.json(); //returns the data in the json format.
+        })
+            .then((data)=>{
+                console.log(data); // second then me it will provide response required.
+                renderlist(data);
+            })
+            .catch(err => {
+                console.error(err); // for any errors.
+            });
+        }
+    );
+
+    function renderlist(data){
+        var html =`<div id="result">
+                  <div id="location">
+                    Name: ${data.location.name}
+                    Region: ${data.location.region}
+                    Country: ${data.location.country}
+                    LocalTime: ${data.location.localtime}
+                     <div/>
+                    
+                     <div id="current">
+                    last_updated: ${data.current.last_updated}
+                    temp_c: ${data.current.temp_c}
+                    text: ${data.current.condition.text}
+                    humidity: ${data.current.humidity}
+                    cloud: ${data.current.cloud}
+                    wind_dir: ${data.current.wind_dir}
+                    <div/>
+                     
+                     <div id="forecast">
+                    maxtemp_c: ${data.forecast.forecastday[0].day.maxtemp_c}
+                    mintemp_c: ${data.forecast.forecastday[0].day.mintemp_c}
+                    <div/>
+                   <div/>`
+
+                   result.innerHTML = html;
+                   cityname.value = "";
+    }
+</Script>
+
+</html>
